@@ -6,6 +6,8 @@
                 :resourceName="resourceName"
                 :resourceId="$parent.resource['id'].value"
                 @finished="reload"
+                @success="success"
+                @error="error"
             />
         </span>
         <div v-else :class="{'block text-right': field.indexAlign == 'right'}">
@@ -32,6 +34,8 @@
                                     @finished="modalReload"
                                     :resourceName="resourceName"
                                     :resourceId="$parent.resource['id'].value"
+                                    @success="success"
+                                    @error="error"
                                 />
                             </div>
                          </div>
@@ -57,7 +61,8 @@ export default {
         reload()  {
             if(this.field.reload && queue.allowsReload()) {
                 window.setTimeout(() => {
-                    this.$router.go()
+                    this.$router.go();
+                    this.finished();
                 }, 200)
             }
         },
@@ -67,6 +72,15 @@ export default {
                 this.openModal = false;          
                 this.reload()
             }, 400)
+        },
+        success() {
+            this.$emit("success");
+        },
+        finished() {
+            this.$emit("finished");
+        },
+        error() {
+            this.$emit("error");
         }
     }
 }

@@ -10,6 +10,8 @@
                     :resourceName="resourceName"
                     :resourceId="resourceId"
                     @finished="reload"
+                    @success="success"
+                    @error="error"
                 />
             </span>
             <div v-else>
@@ -31,7 +33,7 @@
                                         style="order: 2;" 
                                         class="cursor-pointer btn text-80 font-normal px-3 mr-3 btn-link" 
                                         @click.prevent="openModal = false">Cancel</a>
-                                    <nova-button v-bind="$props" @finished="modalReload" />
+                                    <nova-button v-bind="$props" @finished="modalReload" @success="success" @error="error" />
                                 </div>
                             </div>
                         </modal>
@@ -57,7 +59,8 @@ export default {
         reload() {
             if(this.field.reload && queue.allowsReload()) {
                 window.setTimeout(() => {
-                    this.$router.go()
+                    this.$router.go();
+                    this.finished();
                 }, 200)
             }
         },
@@ -66,6 +69,15 @@ export default {
                 this.openModal = false;          
                 this.reload()
             }, 400)
+        },
+        success() {
+            this.$emit("success");
+        },
+        finished() {
+            this.$emit("finished");
+        },
+        error() {
+            this.$emit("error");
         }
     }
 }
