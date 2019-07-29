@@ -28,7 +28,7 @@
                                 <a 
                                     style="order:2;" 
                                     @click.prevent="openModal = false"
-                                    class="cursor-pointer btn text-80 font-normal px-3 mr-3 btn-link" >Cancel</a>
+                                    class="cursor-pointer btn text-80 font-normal px-3 mr-3 btn-link" >{{field.cancelText}}</a>
                                 <nova-button 
                                     :field="field"
                                     @finished="modalReload"
