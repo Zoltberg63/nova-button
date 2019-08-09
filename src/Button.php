@@ -52,6 +52,8 @@ class Button extends Field
 
     public $successClasses = null;
 
+    public $cancelText = null;
+
     public function __construct($name, $key = null)
     {
         $this->name = $name;
@@ -91,6 +93,7 @@ class Button extends Field
             'successClasses' => $this->successClasses,
             'loadingText' => $this->loadingText,
             'loadingClasses' => $this->loadingClasses,
+            'cancelText' => $this->cancelText,
         ]);
     }
     
@@ -193,6 +196,13 @@ class Button extends Field
     public function errorText($errorText)
     {
         $this->errorText = $errorText;
+
+        return $this;
+    }
+
+    public function cancelText($cancelText)
+    {
+        $this->cancelText = $cancelText;
 
         return $this;
     }
@@ -313,6 +323,7 @@ class Button extends Field
         $this->errorStyle = array_get($this->config, "defaults.errorStyle", str_replace('primary', 'danger', $this->style));
         $this->successText = array_get($this->config, "defaults.successText", 'Success!');
         $this->successStyle = array_get($this->config, "defaults.successStyle", str_replace('primary', 'success', $this->style));
+        $this->cancelText = array_get($this->config, "defaults.cancelText", 'Cancel');
     }
 
     public function addLinkFallbacks()

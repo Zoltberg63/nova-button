@@ -22,14 +22,14 @@
                                 <heading :level="2" class="mb-6" v-html="field.confirm.title"></heading>
                                 <p class="text-80 leading-normal" v-html="field.confirm.body"></p>
                             </div>
-                            <div 
-                                class="border-t border-50 px-6 py-3 ml-auto flex items-center" 
+                            <div
+                                class="border-t border-50 px-6 py-3 ml-auto flex items-center"
                                 style="min-height: 70px; flex-direction: row-reverse">
-                                <a 
-                                    style="order:2;" 
+                                <a
+                                    style="order:2;"
                                     @click.prevent="openModal = false"
-                                    class="cursor-pointer btn text-80 font-normal px-3 mr-3 btn-link" >{{field.cancelText}}</a>
-                                <nova-button 
+                                    class="cursor-pointer btn text-80 font-normal px-3 mr-3 btn-link" v-html="field.cancelText" ></a>
+                                <nova-button
                                     :field="field"
                                     @finished="modalReload"
                                     :resourceName="resourceName"

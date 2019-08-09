@@ -19,6 +19,7 @@ return [
         'successText' => 'Success',
         'errorStyle' => 'link-danger',
         'errorText' => 'Failed',
+        'cancelText' => 'Cancel',
     ],
 
     /*
