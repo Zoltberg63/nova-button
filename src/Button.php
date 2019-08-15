@@ -283,6 +283,13 @@ class Button extends Field
         return $this;
     }
 
+    public function submit()
+    {
+        $this->type = 'submit';
+
+        return $this;
+    }
+
     /**
      * Add filters to index view.
      *

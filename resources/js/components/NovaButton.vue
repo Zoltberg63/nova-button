@@ -19,6 +19,9 @@
       :target="field.link.target"
       :style="{'min-width': buttonWidth}"
     />
+    <button v-else-if="field.type == 'submit'" v-html="buttonText"
+            class="nova-button" :class="buttonClasses" type="submit"
+            ref="novabutton" :style="{'min-width': buttonWidth}" name="submit" :value="field.key" />
     <span v-else :class="ajaxClasses">
       <a
         ref="novabutton"
