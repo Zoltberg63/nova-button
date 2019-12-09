@@ -1,7 +1,7 @@
 <template>
-    <div v-if="field.visible">    
+    <div v-if="field.visible">
         <span v-if="field.confirm == null" :class="{'block text-right': field.indexAlign == 'right'}">
-            <nova-button 
+            <nova-button
                 :field="field"
                 :resourceName="resourceName"
                 :resourceId="$parent.resource['id'].value"
@@ -11,13 +11,11 @@
             />
         </span>
         <div v-else :class="{'block text-right': field.indexAlign == 'right'}">
-            <span>
-                <a :class="field.classes" v-html="field.text" @click="openModal = true" />
-            </span>
+            <a class="whitespace-no-wrap" :class="field.classes" v-html="field.text" @click="openModal = true" />
             <portal to="modals">
                 <transition name="fade">
                      <modal v-if="openModal" @modal-close="openModal = false">
-                         <div class="bg-white rounded-lg shadow-lg overflow-hidden" style="width: 460px;">
+                        <form class="bg-white rounded-lg shadow-lg overflow-hidden" style="width: 460px;">
                             <div class="p-8">
                                 <heading :level="2" class="mb-6" v-html="field.confirm.title"></heading>
                                 <p class="text-80 leading-normal" v-html="field.confirm.body"></p>
@@ -38,7 +36,7 @@
                                     @error="error"
                                 />
                             </div>
-                         </div>
+                        </form>
                     </modal>
                 </transition>
             </portal>
@@ -69,7 +67,7 @@ export default {
         modalReload()
         {
             window.setTimeout(() => {
-                this.openModal = false;          
+                this.openModal = false;
                 this.reload()
             }, 400)
         },

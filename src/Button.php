@@ -3,17 +3,18 @@
 namespace NovaButton;
 
 use Laravel\Nova\Fields\Field;
-use Laravel\Nova\Filters\Filter;
 use Laravel\Nova\Resource;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 class Button extends Field
 {
     public $style = null;
-    
+
     public $classes = [];
 
     public $reload = false;
-    
+
     public $visible = true;
 
     public $showOnUpdate = false;
@@ -37,13 +38,13 @@ class Button extends Field
     public $link = null;
 
     public $confirm = null;
-    
+
     public $indexAlign = 'right';
 
     public $errorText = null;
-    
+
     public $errorClasses = null;
-    
+
     public $loadingText = null;
 
     public $loadingClasses = null;
@@ -58,7 +59,7 @@ class Button extends Field
     {
         $this->name = $name;
         $this->text = $name;
-        $this->key = $key ?? kebab_case($name);
+        $this->key = $key ?? Str::kebab($name);
         $this->config = config('nova-button');
         $this->addDefaultSettings();
     }
@@ -67,36 +68,36 @@ class Button extends Field
     {
         parent::resolve($resource, $attribute);
 
-        $this->classes[] = 'nova-button-' . strtolower(class_basename($resource));
-        $this->classes[] = array_get($this->config, "styles.{$this->style}");
-        $this->loadingClasses = array_get($this->config, "styles.{$this->loadingStyle}");
-        $this->successClasses = array_get($this->config, "styles.{$this->successStyle}");
-        $this->errorClasses = array_get($this->config, "styles.{$this->errorStyle}");
-        
+        $this->classes[] = 'nova-button-'.strtolower(class_basename($resource));
+        $this->classes[] = Arr::get($this->config, "styles.{$this->style}");
+        $this->loadingClasses = Arr::get($this->config, "styles.{$this->loadingStyle}");
+        $this->successClasses = Arr::get($this->config, "styles.{$this->successStyle}");
+        $this->errorClasses = Arr::get($this->config, "styles.{$this->errorStyle}");
+
         $this->withMeta([
-            'key' => $this->key,
-            'type' => $this->type,
-            'link' => $this->link,
-            'text'  => $this->text,
-            'event' => $this->event,
-            'label' => $this->label,
-            'route' => $this->route,
-            'reload' => $this->reload,
-            'confirm' => $this->confirm,
-            'visible' => $this->visible,
-            'classes' => $this->classes,
-            'indexName' => $this->indexName,
-            'indexAlign' => $this->indexAlign,
-            'errorText' => $this->errorText,
-            'errorClasses' => $this->errorClasses,
-            'successText' => $this->successText,
+            'key'            => $this->key,
+            'type'           => $this->type,
+            'link'           => $this->link,
+            'text'           => $this->text,
+            'event'          => $this->event,
+            'label'          => $this->label,
+            'route'          => $this->route,
+            'reload'         => $this->reload,
+            'confirm'        => $this->confirm,
+            'visible'        => $this->visible,
+            'classes'        => $this->classes,
+            'indexName'      => $this->indexName,
+            'indexAlign'     => $this->indexAlign,
+            'errorText'      => $this->errorText,
+            'errorClasses'   => $this->errorClasses,
+            'successText'    => $this->successText,
             'successClasses' => $this->successClasses,
-            'loadingText' => $this->loadingText,
+            'loadingText'    => $this->loadingText,
             'loadingClasses' => $this->loadingClasses,
             'cancelText' => $this->cancelText,
         ]);
     }
-    
+
     public function style($style)
     {
         $this->style = $style;
@@ -135,8 +136,8 @@ class Button extends Field
     public function confirm($message1 = null, $message2 = null)
     {
         $this->confirm = [
-            'title' => 'Confirmation',
-            'body' => null
+            'title' => __('Confirmation'),
+            'body'  => null,
         ];
 
         if ($message1 && $message2 == null) {
@@ -217,7 +218,7 @@ class Button extends Field
     public function index($namespace)
     {
         $this->route('index', [
-            'resourceName' => $this->normalizeResourceName($namespace)
+            'resourceName' => $this->normalizeResourceName($namespace),
         ]);
 
         return $this;
@@ -227,7 +228,7 @@ class Button extends Field
     {
         $this->route('detail', [
             'resourceName' => $this->normalizeResourceName($namespace),
-            'resourceId' => $id,
+            'resourceId'   => $id,
         ]);
 
         return $this;
@@ -236,7 +237,7 @@ class Button extends Field
     public function create($namespace)
     {
         $this->route('create', [
-            'resourceName' => $this->normalizeResourceName($namespace)
+            'resourceName' => $this->normalizeResourceName($namespace),
         ]);
 
         return $this;
@@ -246,7 +247,7 @@ class Button extends Field
     {
         $this->route('edit', [
             'resourceName' => $this->normalizeResourceName($namespace),
-            'resourceId' => $id,
+            'resourceId'   => $id,
         ]);
 
         return $this;
@@ -256,7 +257,7 @@ class Button extends Field
     {
         $this->route('lens', [
             'resourceName' => $this->normalizeResourceName($namespace),
-            'lens' => $key
+            'lens'         => $key,
         ]);
 
         return $this;
@@ -275,10 +276,23 @@ class Button extends Field
         $this->type = 'route';
 
         $this->route = [
-            'name' => $name,
+            'name'   => $name,
             'params' => $params,
-            'query' => [],
+            'query'  => [],
         ];
+
+        return $this;
+    }
+
+    /**
+     * Add params to route
+     *
+     * @param  array $params
+     * @return $this
+     */
+    public function withParams(array $params)
+    {
+        $this->route['query'] = array_merge($this->route['query'], $params);
 
         return $this;
     }
@@ -293,17 +307,18 @@ class Button extends Field
     /**
      * Add filters to index view.
      *
-     * @param  array $filters
+     * @param array $filters
+     *
      * @return $this
      */
     public function withFilters(array $filters)
     {
-        $key = $this->route['params']['resourceName'] . '_filter';
+        $key = $this->route['params']['resourceName'].'_filter';
 
         $this->route['query'][$key] = base64_encode(json_encode(collect($filters)->map(function ($value, $key) {
             return [
                 'class' => $key,
-                'value' => $value
+                'value' => $value,
             ];
         })->values()));
 
@@ -311,7 +326,8 @@ class Button extends Field
     }
 
     /**
-     * @param  string $namespace
+     * @param string $namespace
+     *
      * @return string
      */
     protected function normalizeResourceName($namespace)
@@ -323,31 +339,31 @@ class Button extends Field
     public function addDefaultSettings()
     {
         $this->addLinkFallbacks();
-        $this->style = array_get($this->config, "defaults.style", 'link-primary');
-        $this->loadingText = array_get($this->config, "defaults.loadingText", 'Loading');
-        $this->loadingStyle = array_get($this->config, "defaults.loadingStyle", str_replace('primary', 'grey', $this->style));
-        $this->errorText = array_get($this->config, "defaults.errorText", 'Error!');
-        $this->errorStyle = array_get($this->config, "defaults.errorStyle", str_replace('primary', 'danger', $this->style));
-        $this->successText = array_get($this->config, "defaults.successText", 'Success!');
-        $this->successStyle = array_get($this->config, "defaults.successStyle", str_replace('primary', 'success', $this->style));
-        $this->cancelText = array_get($this->config, "defaults.cancelText", 'Cancel');
+        $this->style = Arr::get($this->config, 'defaults.style', 'link-primary');
+        $this->loadingText = Arr::get($this->config, 'defaults.loadingText', 'Loading');
+        $this->loadingStyle = Arr::get($this->config, 'defaults.loadingStyle', str_replace('primary', 'grey', $this->style));
+        $this->errorText = Arr::get($this->config, 'defaults.errorText', 'Error!');
+        $this->errorStyle = Arr::get($this->config, 'defaults.errorStyle', str_replace('primary', 'danger', $this->style));
+        $this->successText = Arr::get($this->config, 'defaults.successText', 'Success!');
+        $this->successStyle = Arr::get($this->config, 'defaults.successStyle', str_replace('primary', 'success', $this->style));
+        $this->cancelText = Arr::get($this->config, 'defaults.cancelText', 'Cancel');
     }
 
     public function addLinkFallbacks()
     {
-        if (!array_has($this->config, 'styles.link-primary')) {
+        if (!Arr::has($this->config, 'styles.link-primary')) {
             $this->config['styles']['link-primary'] = 'cursor-pointer dim inline-block text-primary font-bold no-underline';
         }
 
-        if (!array_has($this->config, 'styles.link-success')) {
+        if (!Arr::has($this->config, 'styles.link-success')) {
             $this->config['styles']['link-success'] = 'cursor-pointer dim inline-block text-success font-bold no-underline';
         }
 
-        if (!array_has($this->config, 'styles.link-grey')) {
+        if (!Arr::has($this->config, 'styles.link-grey')) {
             $this->config['styles']['link-grey'] = 'cursor-pointer dim inline-block text-grey font-bold no-underline';
         }
 
-        if (!array_has($this->config, 'styles.link-danger')) {
+        if (!Arr::has($this->config, 'styles.link-danger')) {
             $this->config['styles']['link-danger'] = 'cursor-pointer dim inline-block text-danger font-bold no-underline';
         }
     }
